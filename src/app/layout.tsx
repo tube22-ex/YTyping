@@ -2,24 +2,28 @@ import { Header } from "@/app/_components/header/header";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
+import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Suspense } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSession } from "@/lib/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
+import { JotaiProviderWrapper } from "./_components/jotai-provider-wrapper";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
 import { SessionProvider } from "./_components/session-provider";
 import { ThemeProvider } from "./_components/theme-provider";
-import { Suspense } from "react";
-import { JotaiProviderWrapper } from "./_components/jotai-provider-wrapper";
-import dynamic from "next/dynamic";
 
 const ConfirmDialogHost = dynamic(() => import("@/components/ui/confirm-dialog").then((m) => m.ConfirmDialogHost));
 const OverlayHost = dynamic(() => import("@/components/ui/overlay").then((m) => m.OverlayHost));
 const Toaster = dynamic(() => import("@/components/ui/sonner").then((m) => m.Toaster));
-const ClearSelectionOnNavigate = dynamic(() => import("@/utils/hooks/clear-selection-on-navigate").then((m) => m.ClearSelectionOnNavigate));
-const PreviewYouTubePlayer = dynamic(() => import("./_components/preview-youtube-player").then((m) => m.PreviewYouTubePlayer));
+const ClearSelectionOnNavigate = dynamic(() =>
+  import("@/utils/hooks/clear-selection-on-navigate").then((m) => m.ClearSelectionOnNavigate),
+);
+const PreviewYouTubePlayer = dynamic(() =>
+  import("./_components/preview-youtube-player").then((m) => m.PreviewYouTubePlayer),
+);
 const UserScriptInit = dynamic(() => import("./user-script").then((m) => m.UserScriptInit));
 
 const notoSansJP = Noto_Sans_JP({

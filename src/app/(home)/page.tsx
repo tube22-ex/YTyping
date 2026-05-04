@@ -1,9 +1,9 @@
+import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import { getSession } from "@/lib/auth";
 import { loadMapListSearchParams } from "@/app/(home)/_feature/controls/search-params";
+import { getSession } from "@/lib/auth";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { JotaiProvider } from "./_feature/provider";
-import dynamic from "next/dynamic";
 
 const MapListControls = dynamic(() => import("./_feature/controls/controls").then((m) => m.MapListControls));
 const MapList = dynamic(() => import("./_feature/map-list").then((m) => m.MapList));

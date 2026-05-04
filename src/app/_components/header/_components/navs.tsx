@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import { LeftMenus, SiteLogo } from "./left-menus";
 import { ActiveUsersSheet } from "./right-menus/active-user/active-users-sheet";
@@ -38,7 +38,7 @@ export const RightNav = () => {
 
   const isRegisterPage = pathname === "/user/register";
 
-  if (!mounted) return <div className="flex select-none items-center gap-2 h-10 w-20" />;
+  if (!mounted) return <div className="flex h-10 w-20 select-none items-center gap-2" />;
 
   return (
     <div className="flex select-none items-center gap-2">

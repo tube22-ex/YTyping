@@ -1,7 +1,7 @@
 import { Header } from "@/app/_components/header/header";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -29,8 +29,27 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: "YTyping",
-  description: "",
+  description: "YouTube Typing Game",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "YTyping",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
+
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const userAgent = (await headers()).get("user-agent") ?? "";

@@ -127,7 +127,7 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
       rating: MapDifficulties.rating,
     },
     bookmark: {
-      hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
+      hasBookmarked: sql`false`.mapWith(Boolean),
     },
     like: {
       count: Maps.likeCount,

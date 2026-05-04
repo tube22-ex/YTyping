@@ -64,7 +64,7 @@ const withPWA = withPWAInit({
       },
     },
     {
-      urlPattern: /^https?:\/\/localhost:3000\/?$/i,
+      urlPattern: /\/$/i,
       handler: "StaleWhileRevalidate",
       options: {
         cacheName: "index-page",
@@ -75,7 +75,7 @@ const withPWA = withPWAInit({
       },
     },
     {
-      urlPattern: /\/(type|rankings|user|manual|bookmarks|timeline|edit)\/.*/i,
+      urlPattern: /\/(type|rankings|user|manual|bookmarks|timeline|edit)($|\/.*)/i,
       handler: "StaleWhileRevalidate",
       options: {
         cacheName: "dynamic-pages",

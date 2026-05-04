@@ -81,4 +81,16 @@ export const mapBookmarkListItemRouter = {
 
       return { action: "removed" as const };
     }),
+
+  getBookmarkedMapIds: protectedProcedure.query(async ({ ctx }) => {
+    const { db, session } = ctx;
+
+    const items = await db
+      .select({ mapId: MapBookmarkListItems.mapId })
+      .from(MapBookmarkListItems)
+      .innerJoin(MapBookmarkLists, eq(MapBookmarkLists.id, MapBookmarkListItems.listId))
+      .where(eq(MapBookmarkLists.userId, session.user.id));
+
+    return Array.from(new Set(items.map((item) => item.mapId)));
+  }),
 } satisfies TRPCRouterRecord;

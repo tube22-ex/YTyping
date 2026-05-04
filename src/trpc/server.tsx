@@ -17,7 +17,12 @@ import "server-only";
  * handling a tRPC call from a React Server Component.
  */
 const createContext = cache(async () => {
-  const heads = new Headers(await headers());
+  let heads = new Headers();
+  try {
+    heads = new Headers(await headers());
+  } catch {
+    // ignore
+  }
   heads.set("x-trpc-source", "rsc");
 
   return createTRPCContext({ headers: heads, auth });
@@ -36,7 +41,7 @@ const createStaticContext = cache(async () => {
     auth: {
       ...auth,
       // Override getSession/api to avoid calling dynamic cookies()
-      api: { ...auth.api, getSession: async () => null },
+      api: { ...auth.api, getSession: async (_?: any) => null },
     },
   });
 });

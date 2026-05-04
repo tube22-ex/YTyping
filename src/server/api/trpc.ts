@@ -10,7 +10,12 @@ import type { AppRouter } from "./root";
 
 export const createTRPCContext = async (opts: { headers: Headers; auth: Auth }) => {
   const authApi = opts.auth.api;
-  const session = await authApi.getSession();
+  let session = null;
+  try {
+    session = await authApi.getSession({ headers: opts.headers });
+  } catch {
+    // ignore
+  }
 
   return { authApi, session, db, headers: opts.headers };
 };

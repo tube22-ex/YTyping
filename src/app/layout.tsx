@@ -11,6 +11,7 @@ import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { JotaiProviderWrapper } from "./_components/jotai-provider-wrapper";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
+import { StateSync } from "./_components/state-sync";
 import { ThemeProvider } from "./_components/theme-provider";
 
 const ConfirmDialogHost = dynamic(() => import("@/components/ui/confirm-dialog").then((m) => m.ConfirmDialogHost));
@@ -102,6 +103,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <OverlayHost />
         <ClearSelectionOnNavigate />
         <UserScriptInit />
+        <StateSync />
       </body>
     </html>
   );

@@ -14,6 +14,10 @@ const withPWA = withPWAInit({
   aggressiveFrontEndNavCaching: false, // 負荷軽減
   runtimeCaching: [
     {
+      urlPattern: /\/api\/.*/i,
+      handler: "NetworkOnly",
+    },
+    {
       urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
       handler: "CacheFirst",
       options: {

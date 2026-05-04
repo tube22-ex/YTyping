@@ -13,13 +13,15 @@ export const JotaiProvider = ({
   userAgent,
 }: {
   children: ReactNode;
-  userOptions: RouterOutputs["user"]["option"]["getForSession"];
-  userAgent: string;
+  userOptions?: RouterOutputs["user"]["option"]["getForSession"];
+  userAgent?: string;
 }) => {
+  const ua = userAgent ?? (typeof window !== "undefined" ? window.navigator.userAgent : "");
+
   return (
     <AtomsHydrator
       atomValues={[
-        [userAgentAtom, new UAParser(userAgent)],
+        [userAgentAtom, new UAParser(ua)],
         [userOptionsAtom, userOptions ?? DEFAULT_USER_OPTIONS],
       ]}
       dangerouslyForceHydrate

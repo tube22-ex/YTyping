@@ -1,7 +1,6 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { loadMapListSearchParams } from "@/app/(home)/_feature/controls/search-params";
-import { getSession } from "@/lib/auth";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { JotaiProvider } from "./_feature/provider";
 
@@ -12,12 +11,8 @@ export const revalidate = 600; // 10 minutes
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const mapListQueryParams = loadMapListSearchParams(await searchParams);
-  const session = await getSession();
 
   prefetch(trpc.map.list.get.infiniteQueryOptions(mapListQueryParams));
-  if (session) {
-    prefetch(trpc.map.bookmark.lists.getForSession.queryOptions());
-  }
 
   return (
     <HydrateClient>

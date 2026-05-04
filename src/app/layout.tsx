@@ -93,17 +93,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                       <PreviewYouTubePlayer />
                     </JotaiProviderWrapper>
                   </Suspense>
+                  <Toaster />
+                  <ConfirmDialogHost />
+                  <OverlayHost />
+                  <ClearSelectionOnNavigate />
+                  <UserScriptInit />
+                  <StateSync />
                 </TooltipProvider>
               </LinkProgressProvider>
             </TRPCProvider>
           </ThemeProvider>
         </NuqsAdapter>
-        <Toaster />
-        <ConfirmDialogHost />
-        <OverlayHost />
-        <ClearSelectionOnNavigate />
-        <UserScriptInit />
-        <StateSync />
       </body>
     </html>
   );

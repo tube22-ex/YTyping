@@ -10,7 +10,7 @@ import type { AppRouter } from "./root";
 
 export const createTRPCContext = async (opts: { headers: Headers; auth: Auth }) => {
   const authApi = opts.auth.api;
-  const session = await getSession();
+  const session = await authApi.getSession();
 
   return { authApi, session, db, headers: opts.headers };
 };
@@ -42,6 +42,8 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
 const getRequestIp = async () => {
   try {
     const requestHeaders = await headers();
+    if (!requestHeaders) return null;
+
     const forwardedFor =
       requestHeaders.get("x-forwarded-for") ??
       requestHeaders.get("x-real-ip") ??
@@ -49,6 +51,7 @@ const getRequestIp = async () => {
 
     return forwardedFor?.split(",")[0]?.trim() ?? null;
   } catch {
+    // In ISR/SSG, headers() will throw or return null.
     return null;
   }
 };

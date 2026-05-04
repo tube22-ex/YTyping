@@ -20,7 +20,7 @@ export const env = createEnv({
     PORT: z.string().optional(),
     NODE_ENV: z.enum(["development", "production"]).optional(),
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
-    DATABASE_URL: z.url(),
+    DATABASE_URL: z.preprocess((str) => process.env.DATABASE_URL ?? process.env.POSTGRES_URL ?? str, z.string().url()),
     KV_REST_API_URL: isVercel ? z.url() : z.url().optional(),
     KV_REST_API_TOKEN: isVercel ? z.string() : z.string().optional(),
 
@@ -62,8 +62,8 @@ export const env = createEnv({
   experimental__runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_MAINTENANCE_MODE: process.env.NEXT_PUBLIC_MAINTENANCE_MODE,
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY,
   },
 
   skipValidation: !!process.env.CI || process.env.npm_lifecycle_event === "lint",

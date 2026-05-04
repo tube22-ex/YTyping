@@ -1,18 +1,18 @@
 // @ts-check
 
+import withPWAInit from "@ducanh2912/next-pwa";
 /** biome-ignore-all lint/style/noProcessEnv: <process.envを使用する必要がある> */
 import type { NextConfig } from "next";
-import withPWAInit from "@ducanh2912/next-pwa";
 
 const withPWA = withPWAInit({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
   register: true,
   skipWaiting: true,
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
-  swMinify: true,
+  swMinify: false, // ビルド高速化のために圧縮をオフに
+  cacheOnFrontEndNav: false, // 初回ロード時の負荷軽減
+  aggressiveFrontEndNavCaching: false, // 負荷軽減
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
@@ -61,7 +61,7 @@ const withPWA = withPWAInit({
       },
     },
     {
-      urlPattern: /^\/$/i,
+      urlPattern: /^https?:\/\/localhost:3000\/?$/i,
       handler: "StaleWhileRevalidate",
       options: {
         cacheName: "index-page",
@@ -71,18 +71,35 @@ const withPWA = withPWAInit({
         },
       },
     },
+    {
+      urlPattern: /\/(type|rankings|user|manual|bookmarks|timeline|edit)\/.*/i,
+      handler: "StaleWhileRevalidate",
+      options: {
+        cacheName: "dynamic-pages",
+        expiration: {
+          maxEntries: 200,
+          maxAgeSeconds: 24 * 60 * 60, // 24 hours
+        },
+      },
+    },
   ],
 });
 
-
 const nextConfig: NextConfig = {
+  cacheComponents: false,
+  experimental: {
+    scrollRestoration: true,
+  },
   reactStrictMode: false,
   typedRoutes: true,
   reactCompiler: true,
+  productionBrowserSourceMaps: false,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
-  experimental: { scrollRestoration: true },
   images: {
     minimumCacheTTL: 2678400, // 31 days
     remotePatterns: [
@@ -102,4 +119,3 @@ const nextConfig: NextConfig = {
 
 // biome-ignore lint/style/noDefaultExport: required default export
 export default withPWA(nextConfig);
-

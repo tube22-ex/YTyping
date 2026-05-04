@@ -1,4 +1,5 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { revalidatePath } from "next/cache";
 import { and, eq, max, sql } from "drizzle-orm";
 import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
@@ -171,6 +172,10 @@ export const mapRouter = {
 
       return newId;
     });
+
+    // オンデマンド再検証
+    revalidatePath("/");
+    revalidatePath(`/type/${newMapId}`);
 
     return { id: newMapId, creatorId: userId };
   }),

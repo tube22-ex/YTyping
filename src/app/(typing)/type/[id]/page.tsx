@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+export const revalidate = 3600; // 1 hour
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { getCaller, HydrateClient, prefetch, trpc } from "@/trpc/server";

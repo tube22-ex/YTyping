@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,14 @@ import {
 export const PreviewYouTubePlayer = () => {
   const isPreviewEnabled = useIsPreviewEnabled();
   const { videoId } = usePreviewVideoInfoState();
+
+  const [shouldMount, setShouldMount] = useState(false);
+
+  useEffect(() => {
+    if (videoId) {
+      setShouldMount(true);
+    }
+  }, [videoId]);
 
   useHotkeys(
     "Escape",
@@ -35,6 +43,7 @@ export const PreviewYouTubePlayer = () => {
   }, [isPreviewEnabled]);
 
   if (!isPreviewEnabled) return null;
+  if (!shouldMount) return null;
 
   return (
     <YouTube

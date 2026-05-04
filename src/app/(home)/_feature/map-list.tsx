@@ -102,8 +102,13 @@ const ThreeColumnMapList = ({ items, initialInView, imagePriority, onEnter, page
 
   return (
     <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3" ref={ref}>
-      {items.map((map) => (
-        <CompactMapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority} />
+      {items.map((map, index) => (
+        <CompactMapCard
+          key={map.id}
+          map={map}
+          initialInView={initialInView}
+          imagePriority={imagePriority && index < 6}
+        />
       ))}
     </section>
   );
@@ -114,8 +119,8 @@ const TwoColumnMapList = ({ items, initialInView, imagePriority, onEnter, pageIn
 
   return (
     <section className="grid grid-cols-1 gap-3 sm:grid-cols-2" ref={ref}>
-      {items.map((map) => (
-        <MapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority} />
+      {items.map((map, index) => (
+        <MapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority && index < 6} />
       ))}
     </section>
   );

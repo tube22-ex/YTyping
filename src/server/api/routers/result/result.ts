@@ -1,4 +1,5 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { revalidatePath } from "next/cache";
 import { and, desc, eq, inArray, max } from "drizzle-orm";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
@@ -122,6 +123,11 @@ export const resultRouter = {
 
       const myRankIndex = rankedUsers.findIndex((user) => user.userId === userId);
       const myRank = myRankIndex !== -1 ? myRankIndex + 1 : null;
+      
+      // オンデマンド再検証
+      revalidatePath("/rankings/performance");
+      revalidatePath(`/type/${mapId}`);
+      revalidatePath(`/user/${userId}`);
 
       return { rankingCount: rankedUsers.length, myRank, myRankUpdatedAt: new Date() };
     });

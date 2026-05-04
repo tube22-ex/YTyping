@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { LeftMenus, SiteLogo } from "./left-menus";
@@ -13,11 +13,16 @@ import { UserMenu } from "./right-menus/user-menu";
 
 export const LeftNav = () => {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <div className="flex items-center gap-5">
       <SiteLogo />
-      {pathname !== "/user/register" && <LeftMenus />}
+      {mounted && pathname !== "/user/register" && <LeftMenus />}
     </div>
   );
 };
@@ -25,8 +30,15 @@ export const LeftNav = () => {
 export const RightNav = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isRegisterPage = pathname === "/user/register";
+
+  if (!mounted) return <div className="flex select-none items-center gap-2 h-10 w-20" />;
 
   return (
     <div className="flex select-none items-center gap-2">

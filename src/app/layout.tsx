@@ -3,23 +3,24 @@ import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP } from "next/font/google";
-import { headers } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { ConfirmDialogHost } from "@/components/ui/confirm-dialog";
-import { OverlayHost } from "@/components/ui/overlay";
-import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSession } from "@/lib/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
-import { getCaller } from "@/trpc/server";
-import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
-import { JotaiProvider } from "./_components/jotai-provider";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
-import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
 import { SessionProvider } from "./_components/session-provider";
 import { ThemeProvider } from "./_components/theme-provider";
-import { UserScriptInit } from "./user-script";
+import { Suspense } from "react";
+import { JotaiProviderWrapper } from "./_components/jotai-provider-wrapper";
+import dynamic from "next/dynamic";
+
+const ConfirmDialogHost = dynamic(() => import("@/components/ui/confirm-dialog").then((m) => m.ConfirmDialogHost));
+const OverlayHost = dynamic(() => import("@/components/ui/overlay").then((m) => m.OverlayHost));
+const Toaster = dynamic(() => import("@/components/ui/sonner").then((m) => m.Toaster));
+const ClearSelectionOnNavigate = dynamic(() => import("@/utils/hooks/clear-selection-on-navigate").then((m) => m.ClearSelectionOnNavigate));
+const PreviewYouTubePlayer = dynamic(() => import("./_components/preview-youtube-player").then((m) => m.PreviewYouTubePlayer));
+const UserScriptInit = dynamic(() => import("./user-script").then((m) => m.UserScriptInit));
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -49,13 +50,8 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-
-
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const userAgent = (await headers()).get("user-agent") ?? "";
   const session = await getSession();
-  const caller = getCaller();
-  const userOptions = await caller.user.option.getForSession();
 
   return (
     <html lang="ja" className={notoSansJP.className} suppressHydrationWarning>
@@ -77,13 +73,24 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <TooltipProvider delayDuration={600}>
                   <SessionProvider session={session}>
                     <Header className="fixed z-50 h-10 w-screen" session={session} />
-                    <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
-                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
-                        {children}
-                        <Analytics />
-                      </main>
-                      <PreviewYouTubePlayer />
-                    </JotaiProvider>
+                    <Suspense
+                      fallback={
+                        <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                          <div className="mx-auto max-w-7xl space-y-3 lg:px-8">
+                            <div className="h-20 animate-pulse bg-card" />
+                            <div className="h-96 animate-pulse bg-card" />
+                          </div>
+                        </main>
+                      }
+                    >
+                      <JotaiProviderWrapper>
+                        <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                          {children}
+                          <Analytics />
+                        </main>
+                        <PreviewYouTubePlayer />
+                      </JotaiProviderWrapper>
+                    </Suspense>
                   </SessionProvider>
                 </TooltipProvider>
               </LinkProgressProvider>

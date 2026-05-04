@@ -2,7 +2,7 @@ import type { Route } from "next";
 import { CardWithContent } from "@/components/ui/card";
 import { H1, Large, LinkText, P, Small, UList } from "@/components/ui/typography";
 import { env } from "@/env";
-import { ByUser } from "./_components/by-user";
+import { getCaller } from "@/trpc/server";
 
 const TOOLS = [
   {
@@ -49,7 +49,15 @@ const TOOLS = [
   },
 ] as const;
 
-export default function Page() {
+export default async function Page() {
+  const caller = await getCaller();
+  const toolsWithProfiles = await Promise.all(
+    TOOLS.map(async (tool) => {
+      const profile = await caller.user.profile.get({ userId: Number(tool.byUserId) });
+      return { ...tool, userName: profile?.name };
+    }),
+  );
+
   return (
     <article className="mx-auto max-w-7xl space-y-4">
       <H1>ツール</H1>
@@ -58,7 +66,7 @@ export default function Page() {
         <section className="space-y-2">
           <UList
             className="ml-2 list-none space-y-4"
-            items={TOOLS.map((tool) => {
+            items={toolsWithProfiles.map((tool) => {
               return (
                 <div key={tool.href}>
                   <div className="flex items-baseline gap-3">
@@ -66,9 +74,11 @@ export default function Page() {
                       <Large>{tool.title}</Large>
                     </LinkText>
                     {env.VERCEL && (
-                      <Small className="flex">
+                      <Small className="flex gap-1">
                         <span>by.</span>
-                        <ByUser userId={tool.byUserId} />
+                        <LinkText href={`/user/${tool.byUserId}` as Route}>
+                          <span>{tool.userName}</span>
+                        </LinkText>
                       </Small>
                     )}
                   </div>

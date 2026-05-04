@@ -1,13 +1,9 @@
-"use client";
-
-import { useSuspenseQuery } from "@tanstack/react-query";
 import type { Route } from "next";
 import { LinkText } from "@/components/ui/typography";
-import { useTRPC } from "@/trpc/provider";
+import { trpc } from "@/trpc/server";
 
-export const ByUser = ({ userId }: { userId: string }) => {
-  const trpc = useTRPC();
-  const { data: profile } = useSuspenseQuery(trpc.user.profile.get.queryOptions({ userId: Number(userId) }));
+export const ByUser = async ({ userId }: { userId: string }) => {
+  const profile = await trpc.user.profile.get.query({ userId: Number(userId) });
 
   return (
     <LinkText href={`/user/${userId}` as Route}>

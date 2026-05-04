@@ -1,14 +1,18 @@
 "use client";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { setUserOptions } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/trpc/client";
+import { useTRPC } from "@/trpc/provider";
 
 export function StateSync() {
   const { data: session } = useSession();
-  const { data: options } = trpc.user.option.getForSession.useQuery(undefined, {
-    enabled: !!session,
-  });
+  const trpc = useTRPC();
+  const { data: options } = useQuery(
+    trpc.user.option.getForSession.queryOptions(undefined, {
+      enabled: !!session,
+    }),
+  );
 
   useEffect(() => {
     if (options) {

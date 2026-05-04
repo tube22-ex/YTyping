@@ -7,12 +7,10 @@ import { Noto_Sans_JP } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Suspense } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { getSession } from "@/lib/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { JotaiProviderWrapper } from "./_components/jotai-provider-wrapper";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
-import { SessionProvider } from "./_components/session-provider";
 import { ThemeProvider } from "./_components/theme-provider";
 
 const ConfirmDialogHost = dynamic(() => import("@/components/ui/confirm-dialog").then((m) => m.ConfirmDialogHost));
@@ -54,9 +52,7 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const session = await getSession();
-
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ja" className={notoSansJP.className} suppressHydrationWarning>
       <head>
@@ -75,27 +71,27 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             <TRPCProvider>
               <LinkProgressProvider>
                 <TooltipProvider delayDuration={600}>
-                  <SessionProvider session={session}>
-                    <Header className="fixed z-50 h-10 w-screen" session={session} />
-                    <Suspense
-                      fallback={
-                        <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
-                          <div className="mx-auto max-w-7xl space-y-3 lg:px-8">
-                            <div className="h-20 animate-pulse bg-card" />
-                            <div className="h-96 animate-pulse bg-card" />
-                          </div>
-                        </main>
-                      }
-                    >
-                      <JotaiProviderWrapper>
-                        <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
-                          {children}
-                          <Analytics />
-                        </main>
-                        <PreviewYouTubePlayer />
-                      </JotaiProviderWrapper>
-                    </Suspense>
-                  </SessionProvider>
+                  <Suspense fallback={<div className="fixed z-50 h-10 w-screen bg-header-background" />}>
+                    <Header className="fixed z-50 h-10 w-screen" />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                        <div className="mx-auto max-w-7xl space-y-3 lg:px-8">
+                          <div className="h-20 animate-pulse bg-card" />
+                          <div className="h-96 animate-pulse bg-card" />
+                        </div>
+                      </main>
+                    }
+                  >
+                    <JotaiProviderWrapper>
+                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                        {children}
+                        <Analytics />
+                      </main>
+                      <PreviewYouTubePlayer />
+                    </JotaiProviderWrapper>
+                  </Suspense>
                 </TooltipProvider>
               </LinkProgressProvider>
             </TRPCProvider>

@@ -1,14 +1,14 @@
-import type { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { LeftNav, RightNav } from "./_components/navs";
 
 interface HeaderProps {
   className: string;
-  session: Awaited<ReturnType<typeof getSession>>;
 }
 
-export const Header = ({ className, session }: HeaderProps) => {
+export const Header = async ({ className }: HeaderProps) => {
+  const session = await getSession();
   if (session?.user?.id) {
     prefetch(trpc.user.stats.getMyPpRank.queryOptions());
   }

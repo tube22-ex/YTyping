@@ -1,7 +1,6 @@
 // @ts-check
 
 import withPWAInit from "@ducanh2912/next-pwa";
-/** biome-ignore-all lint/style/noProcessEnv: <process.envを使用する必要がある> */
 import type { NextConfig } from "next";
 
 const withPWA = withPWAInit({

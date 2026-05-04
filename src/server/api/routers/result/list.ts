@@ -142,7 +142,7 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
       symbolChunkCount: MapDifficulties.symbolChunkCount,
       rating: MapDifficulties.rating,
       categories: Maps.category,
-      hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
+      hasBookmarked: sql`false`.mapWith(Boolean),
       hasLiked: session ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
       myRank: session ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
       myRankUpdatedAt: session

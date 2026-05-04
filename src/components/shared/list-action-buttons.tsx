@@ -2,6 +2,7 @@ import { useProgress } from "@bprogress/next";
 import { BookmarkListIconButton, RankingStarIconButton } from "@/components/ui/icon-button";
 import { LikeToggleButton } from "@/components/ui/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useIsBookmarked } from "@/lib/atoms/bookmark-atoms";
 import { type Session, useSession } from "@/lib/auth-client";
 import { useToggleMapLikeMutation } from "@/lib/mutations/like";
 import { cn } from "@/lib/utils";
@@ -74,13 +75,14 @@ const LikeCountButton = ({
 };
 
 const MapListBookmarkButton = ({ mapId, hasBookmarked }: { mapId: number; hasBookmarked: boolean }) => {
+  const isBookmarked = useIsBookmarked(mapId);
   return (
     <BookmarkListPopover
       mapId={mapId}
       trigger={
         <BookmarkListIconButton
           size="xs"
-          bookmarked={hasBookmarked}
+          bookmarked={isBookmarked}
           className="z-30 text-muted-foreground hover:bg-primary-light/30"
         />
       }

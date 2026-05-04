@@ -66,12 +66,12 @@ export function HydrateClient(props: { children: ReactNode }) {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <queryOptions 型をうまく表現できないため any を使用>
-export function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(queryOptions: T) {
+export async function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(queryOptions: T) {
   const queryClient = getQueryClient();
   if (queryOptions.queryKey[1]?.type === "infinite") {
     // biome-ignore lint/suspicious/noExplicitAny: <queryOptions 型をうまく表現できないため any を使用>
-    void queryClient.prefetchInfiniteQuery(queryOptions as any);
+    await queryClient.prefetchInfiniteQuery(queryOptions as any);
   } else {
-    void queryClient.prefetchQuery(queryOptions);
+    await queryClient.prefetchQuery(queryOptions);
   }
 }

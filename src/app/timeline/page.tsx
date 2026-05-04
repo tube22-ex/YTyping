@@ -11,7 +11,7 @@ export default async function Home({ searchParams }: PageProps<"/timeline">) {
   const params = loadResultListSearchParams(await searchParams);
 
   // Prefetch data using the ISR-safe staticApi to keep the page cachable
-  prefetch(staticApi.result.list.get.infiniteQueryOptions(params));
+  await prefetch(staticApi.result.list.get.infiniteQueryOptions(params));
 
   return (
     <HydrateClient>

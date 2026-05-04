@@ -107,7 +107,7 @@ const ThreeColumnMapList = ({ items, initialInView, imagePriority, onEnter, page
           key={map.id}
           map={map}
           initialInView={initialInView}
-          imagePriority={imagePriority && index < 6}
+          imagePriority={imagePriority && index < 12}
         />
       ))}
     </section>
@@ -120,7 +120,7 @@ const TwoColumnMapList = ({ items, initialInView, imagePriority, onEnter, pageIn
   return (
     <section className="grid grid-cols-1 gap-3 sm:grid-cols-2" ref={ref}>
       {items.map((map, index) => (
-        <MapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority && index < 6} />
+        <MapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority && index < 12} />
       ))}
     </section>
   );

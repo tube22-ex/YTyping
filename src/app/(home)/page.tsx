@@ -1,18 +1,19 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { loadMapListSearchParams } from "@/app/(home)/_feature/controls/search-params";
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { HydrateClient, prefetch, staticApi } from "@/trpc/server";
 import { JotaiProvider } from "./_feature/provider";
 
 const MapListControls = dynamic(() => import("./_feature/controls/controls").then((m) => m.MapListControls));
 const MapList = dynamic(() => import("./_feature/map-list").then((m) => m.MapList));
 
-export const revalidate = 600; // 10 minutes
+export const revalidate = 60;
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const mapListQueryParams = loadMapListSearchParams(await searchParams);
 
-  prefetch(trpc.map.list.get.infiniteQueryOptions(mapListQueryParams));
+  // Prefetch data using the ISR-safe staticApi to keep the page cachable
+  prefetch(staticApi.map.list.get.infiniteQueryOptions(mapListQueryParams));
 
   return (
     <HydrateClient>

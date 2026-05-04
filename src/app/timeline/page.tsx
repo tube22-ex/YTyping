@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { loadResultListSearchParams } from "@/lib/search-params/result-list";
-import { HydrateClient } from "@/trpc/server";
+import { HydrateClient, prefetch, staticApi } from "@/trpc/server";
 import { JotaiProvider } from "./_components/provider";
 import { UsersResultList } from "./_components/result-list";
 import { SearchContent } from "./_components/search-content";
@@ -10,8 +10,8 @@ export const revalidate = 60;
 export default async function Home({ searchParams }: PageProps<"/timeline">) {
   const params = loadResultListSearchParams(await searchParams);
 
-  // Note: server-side prefetch is disabled to enable ISR, as it calls dynamic headers()/cookies()
-  // prefetch(trpc.result.list.get.infiniteQueryOptions(params));
+  // Prefetch data using the ISR-safe staticApi to keep the page cachable
+  prefetch(staticApi.result.list.get.infiniteQueryOptions(params));
 
   return (
     <HydrateClient>

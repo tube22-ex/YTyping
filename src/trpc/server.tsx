@@ -23,12 +23,40 @@ const createContext = cache(async () => {
   return createTRPCContext({ headers: heads, auth });
 });
 
+/**
+ * ISR-safe context that doesn't call dynamic APIs (headers/cookies).
+ * Use this for prefetching data in static (ISR) pages.
+ */
+const createStaticContext = cache(async () => {
+  const heads = new Headers();
+  heads.set("x-trpc-source", "rsc-static");
+
+  return createTRPCContext({
+    headers: heads,
+    auth: {
+      ...auth,
+      // Override getSession/api to avoid calling dynamic cookies()
+      api: { ...auth.api, getSession: async () => null },
+    },
+  });
+});
+
 const getQueryClient = cache(makeQueryClient);
 export const getCaller = cache(() => createCallerFactory(appRouter)(createContext));
+export const getStaticCaller = cache(() => createCallerFactory(appRouter)(createStaticContext));
 
 export const trpc = createTRPCOptionsProxy<AppRouter>({
   router: appRouter,
   ctx: createContext,
+  queryClient: getQueryClient,
+});
+
+/**
+ * ISR-safe tRPC client for Server Components.
+ */
+export const staticApi = createTRPCOptionsProxy<AppRouter>({
+  router: appRouter,
+  ctx: createStaticContext,
   queryClient: getQueryClient,
 });
 

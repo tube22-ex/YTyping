@@ -2,7 +2,7 @@ import type { Route } from "next";
 import { CardWithContent } from "@/components/ui/card";
 import { H1, Large, LinkText, P, Small, UList } from "@/components/ui/typography";
 import { env } from "@/env";
-import { getCaller } from "@/trpc/server";
+import { getStaticCaller } from "@/trpc/server";
 
 const TOOLS = [
   {
@@ -50,7 +50,7 @@ const TOOLS = [
 ] as const;
 
 export default async function Page() {
-  const caller = await getCaller();
+  const caller = await getStaticCaller();
   const toolsWithProfiles = await Promise.all(
     TOOLS.map(async (tool) => {
       const profile = await caller.user.profile.get({ userId: Number(tool.byUserId) });

@@ -8,10 +8,14 @@ export const vercelRouter = {
   getActiveBuildingAt: publicProcedure.query(async () => {
     if (!env.VERCEL) return;
 
-    const { buildingAt } = await getActiveDeployment();
-    if (!buildingAt) return;
+    try {
+      const { buildingAt } = await getActiveDeployment();
+      if (!buildingAt) return;
 
-    // Vercel APIはUTCで返すが、表示上JSTとして扱いたいため9時間加算する
-    return new Date(buildingAt + JST_OFFSET);
+      // Vercel APIはUTCで返すが、表示上JSTとして扱いたいため9時間加算する
+      return new Date(buildingAt + JST_OFFSET);
+    } catch {
+      return;
+    }
   }),
 } satisfies TRPCRouterRecord;
